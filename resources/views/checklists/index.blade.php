@@ -126,11 +126,43 @@
             padding: 8px 10px;
         }
 
-        
+        .navbar {
+            background-color: #3a3b3d;
+        }
+
+        .navbar .navbar-brand {
+            color: #ffffff;
+            font-size: 1.5rem;
+        }
+
+        .navbar .navbar-nav .nav-item .nav-link {
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .navbar .navbar-nav .nav-item .nav-link:hover {
+            color: #d3d3d3;
+        }
     </style>
 </head>
 
 <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Logo</a>
+            <div class="d-flex">
+                <span class="navbar-text me-3">
+                    Hi, {{ Auth::user()->name }}
+                </span>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
     <div class="container mt-4 mb-4">
         <h2>Manajemen Checklist</h2>
         <form action="{{ route('checklists.store') }}" method="POST">
