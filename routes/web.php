@@ -15,10 +15,11 @@ use App\Http\Controllers\ChecklistController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 
 Route::get('/checklists', [ChecklistController::class, 'index'])->name('checklists.index');
 Route::post('/checklists/store', [ChecklistController::class, 'store'])->name('checklists.store');
+Route::get('/checklists/export-pdf', [ChecklistController::class, 'exportPDF'])->name('checklists.export-pdf');

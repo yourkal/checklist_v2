@@ -91,9 +91,9 @@
 
         .checkbox-wrapper {
             display: grid;
-            grid-template-columns: 2fr 2fr 2fr;
+            grid-template-columns: 2fr 4fr 4fr;
             /* Two columns */
-            gap: 20px;
+            gap: 10px;
         }
 
         .checkbox-wrapper .form-check {
@@ -125,71 +125,74 @@
         .table td {
             padding: 8px 10px;
         }
+
+        
     </style>
 </head>
 
 <body>
-    <div class="container mt-4">
+    <div class="container mt-4 mb-4">
         <h2>Manajemen Checklist</h2>
         <form action="{{ route('checklists.store') }}" method="POST">
             @csrf
-            <div class="mb-3">
-                <label class="form-label">Tanggal</label>
-                <input type="date" class="form-control" name="tanggal" required>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label">Tanggal</label>
+                    <input type="date" class="form-control form-control-sm" name="tanggal" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Bulan</label>
+                    <select class="form-control form-control-sm" name="bulan" required>
+                        @foreach (range(1, 12) as $month)
+                            <option value="{{ $month }}">{{ \Carbon\Carbon::createFromFormat('m', $month)->format('F') }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Tahun</label>
+                    <select class="form-control form-control-sm" name="tahun" required>
+                        @for ($year = 2020; $year <= date('Y'); $year++)
+                            <option value="{{ $year }}">{{ $year }}</option>
+                        @endfor
+                    </select>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label">Tahun</label>
-                <select class="form-control" name="tahun" required>
-                    @for ($year = 2020; $year <= date('Y'); $year++)
-                        <option value="{{ $year }}">{{ $year }}</option>
-                    @endfor
-                </select>
+            
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <label class="form-label">Jam Inspeksi</label>
+                    <select class="form-control form-control-sm" name="jam_inspeksi" required>
+                        <option value="07:00">07:00</option>
+                        <option value="09:00">09:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="17:00">17:00</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nama PIC</label>
+                    <input type="text" class="form-control form-control-sm" name="nama_pic" required>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label">Bulan</label>
-                <select class="form-control" name="bulan" required>
-                    @foreach (range(1, 12) as $month)
-                        <option value="{{ $month }}">
-                            {{ \Carbon\Carbon::createFromFormat('m', $month)->format('F') }}</option>
-                    @endforeach
-                </select>
+            
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <label class="form-label">Area</label>
+                    <select class="form-control form-control-sm" name="area" required>
+                        <option value="Area 1">Area 1</option>
+                        <option value="Area 2">Area 2</option>
+                        <option value="Area 3">Area 3</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Notes</label>
+                    <input type="text" class="form-control form-control-sm" name="deskripsi_pekerjaan" required>
+                </div>
             </div>
+            
 
-            <div class="mb-3">
-                <label class="form-label">Area</label>
-                <select class="form-control" name="area" required>
-                    <option value="Area 1">Area 1</option>
-                    <option value="Area 2">Area 2</option>
-                    <option value="Area 3">Area 3</option>
-                    <!-- Add more areas as needed -->
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Notes</label>
-                <input type="text" class="form-control" name="deskripsi_pekerjaan" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Jam Inspeksi</label>
-                <select class="form-control" name="jam_inspeksi" required>
-                    <option value="07:00">07:00</option>
-                    <option value="09:00">09:00</option>
-                    <option value="11:00">11:00</option>
-                    <option value="14:00">14:00</option>
-                    <option value="17:00">17:00</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Nama PIC</label>
-                <input type="text" class="form-control" name="nama_pic" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Checklist Pekerjaan</label>
+            <div class="mb-3 mt-3">
+                <label class="form-label">Checklist Pekerjaan =</label>
                 <div class="checkbox-wrapper">
                     @foreach (['Cermin', 'Pintu Masuk', 'Platfon', 'Kap Lampu', 'Dinding Kubikal', 'Wastafel', 'Accesories Toilet', 'Tempat Sampah', 'Closet', 'Exhaust Fan', 'Lantai', 'Floordrain', 'Flushing', 'Urinoir', 'Hand Soap', 'Tissue', 'Keset'] as $item)
                         <div class="form-check">
@@ -203,50 +206,65 @@
             <button type="submit" class="btn btn-primary">Simpan</button>
         </form>
         <hr>
-        <div class="container mt-4">
+        
             <h3>Daftar Checklist</h3>
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Tanggal</th>
-                        <th>Notes</th>
+                        <th>Bulan</th>
+                        <th>Tahun</th>
                         <th>Jam</th>
                         <th>PIC</th>
-                        <th>Daftar Pekerjaan</th>
-                        <th>Tahun</th>
-                        <th>Bulan</th>
                         <th>Area</th>
+                        <th>Notes</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($checklists as $checklist)
                     <tr>
                         <td>{{ $checklist->tanggal }}</td>
-                        <td>{{ $checklist->deskripsi_pekerjaan }}</td>
+                        <td>{{ \Carbon\Carbon::createFromFormat('m', $checklist->bulan)->format('F') }}</td>
+                        <td>{{ $checklist->tahun }}</td>
                         <td>{{ $checklist->jam_inspeksi }}</td>
                         <td>{{ $checklist->nama_pic }}</td>
-                        <td class="status-column">
-                            <table class="table">
-                                @foreach(['Cermin', 'Pintu Masuk', 'Platfon', 'Kap Lampu', 'Dinding Kubikal', 'Wastafel', 'Accesories Toilet', 'Tempat Sampah', 'Closet', 'Exhaust Fan', 'Lantai', 'Floordrain', 'Flushing', 'Urinoir', 'Hand Soap', 'Tissue', 'Keset'] as $item)
-                                    <tr>
-                                        <td>{{ $item }}</td>
+                        <td>{{ $checklist->area }}</td>
+                        <td>{{ $checklist->deskripsi_pekerjaan }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">
+                            <strong>Daftar Pekerjaan:</strong>
+                            <table class="table table-bordered">
+                                @php
+                                    $pekerjaan = ['Cermin', 'Pintu Masuk', 'Platfon', 'Kap Lampu', 'Dinding Kubikal', 'Wastafel', 'Accesories Toilet', 'Tempat Sampah', 'Closet', 'Exhaust Fan', 'Lantai', 'Floordrain', 'Flushing', 'Urinoir', 'Hand Soap', 'Tissue', 'Keset'];
+                                    $pekerjaan_chunked = array_chunk($pekerjaan, ceil(count($pekerjaan) / 2)); // Membagi menjadi 2 bagian
+                                @endphp
+                                @foreach($pekerjaan_chunked as $chunk)
+                                <tr>
+                                    @foreach($chunk as $item)
                                         <td>
-                                            <input class="status-checkbox" type="checkbox" disabled {{ in_array($item, $checklist->status_pekerjaan) ? 'checked' : '' }}>
+                                            @if(in_array($item, $checklist->status_pekerjaan))
+                                                <span style="font-size: 14px; font-weight: bold; color: black;">✔</span>
+                                            @else
+                                                <span style="color: gray;">✘</span>
+                                            @endif
+                                            {{ $item }}
                                         </td>
-                                    </tr>
+                                    @endforeach
+                                </tr>
                                 @endforeach
+                                
                             </table>
                         </td>
-                        <td>{{ $checklist->tahun }}</td>
-                        <td>{{ \Carbon\Carbon::createFromFormat('m', $checklist->bulan)->format('F') }}</td>
-                        <td>{{ $checklist->area }}</td>
                     </tr>
                     @endforeach
                 </tbody>
+                
             </table>
-            
+            <a href="{{ route('checklists.export-pdf') }}" class="btn btn-danger mb-3">Export PDF</a>
         </div>
-    </div>
+        
+    
 </body>
 
 </html>

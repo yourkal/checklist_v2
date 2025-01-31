@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Checklist</title>
+    <style>
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 10px;
+            margin: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        td {
+            vertical-align: middle;
+        }
+
+        /* Tambahkan border pada daftar pekerjaan */
+        .pekerjaan-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+
+        .pekerjaan-table th, .pekerjaan-table td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+            font-size: 9px;
+        }
+
+        .checked {
+            font-size: 12px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .unchecked {
+            font-size: 12px;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <h2>Daftar Checklist</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Tanggal</th>
+                <th>Bulan</th>
+                <th>Tahun</th>
+                <th>Jam</th>
+                <th>PIC</th>
+                <th>Area</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($checklists as $checklist)
+            <tr>
+                <td>{{ $checklist->tanggal }}</td>
+                <td>{{ \Carbon\Carbon::createFromFormat('m', $checklist->bulan)->format('F') }}</td>
+                <td>{{ $checklist->tahun }}</td>
+                <td>{{ $checklist->jam_inspeksi }}</td>
+                <td>{{ $checklist->nama_pic }}</td>
+                <td>{{ $checklist->area }}</td>
+                <td>{{ $checklist->deskripsi_pekerjaan }}</td>
+            </tr>
+            <tr>
+                <td colspan="7">
+                    {{-- <strong>Daftar Pekerjaan:</strong> --}}
+                    <table class="pekerjaan-table">
+                        <thead>
+                            <tr>
+                                <th colspan="9">Checklist Pekerjaan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $pekerjaan = ['Cermin', 'Pintu Masuk', 'Platfon', 'Kap Lampu', 'Dinding Kubikal', 'Wastafel', 'Accesories Toilet', 'Tempat Sampah', 'Closet', 'Exhaust Fan', 'Lantai', 'Floordrain', 'Flushing', 'Urinoir', 'Hand Soap', 'Tissue', 'Keset',''];
+                                $pekerjaan_chunked = array_chunk($pekerjaan, ceil(count($pekerjaan) / 2));
+                            @endphp
+                            @foreach($pekerjaan_chunked as $chunk)
+                            <tr>
+                                @foreach($chunk as $item)
+                                    <td>
+                                        @if(in_array($item, $checklist->status_pekerjaan))
+                                            <span class="checked">✔</span>
+                                        @else
+                                            <span class="unchecked">✘</span>
+                                        @endif
+                                        {{ $item }}
+                                    </td>
+                                @endforeach
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</body>
+</html>
