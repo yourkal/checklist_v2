@@ -2,6 +2,7 @@
 
 // Controller for Checklist
 namespace App\Http\Controllers;
+
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\Checklist;
@@ -33,12 +34,19 @@ class ChecklistController extends Controller
 
 
 
-    public function exportPDF()
+    public function exportPdf(Request $request)
     {
-        $checklists = Checklist::all();
+        $query = Checklist::query();
 
-        $pdf = Pdf::loadView('checklists.export', compact('checklists'))->setPaper('A4', 'landscape');
+        if ($request->has('filter_month') && $request->filter_month != '') {
+            $query->where('bulan', $request->filter_month);
+        }
 
-        return $pdf->download('checklist_report.pdf');
+        $checklists = $query->get();
+
+        // Lakukan proses generate PDF menggunakan data $checklists
+        // Contoh menggunakan package seperti dompdf atau snappy:
+        $pdf = PDF::loadView('checklists.export', compact('checklists'));
+        return $pdf->download('checklists.pdf');
     }
 }
